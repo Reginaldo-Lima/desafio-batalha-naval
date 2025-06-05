@@ -72,17 +72,59 @@ int main() {
         posicaoNavio1_X = rand() % 10;
 
         // garante que o tamanho do navio não exceda o limite do tabuleiro
-        if (posicaoNavio1_X > 8){
+        if (posicaoNavio1_X > 7){
             continue;
         } else {
             break;
         }
     }
     
-    //teste
-    tabuleiro[posicaoNavio1_Y][posicaoNavio1_X] = navio[1];
+    //posicionando o navio 1
+    for (int i = 0; i < 3; i++){
+        tabuleiro[posicaoNavio1_Y][posicaoNavio1_X + i] = navio[i];
+    }
 
     // navio 2, vertical
+    // é necessário avaliar para não sobrepor navios
+    while (1) // loop infinito contolado internamente
+    {
+        // declaração de variáveis locais
+        int tentarDeNovo = 0;   //para controlar o loop
+
+        //determina a posição inicial X (Colunas ou Horizontal)
+        posicaoNavio2_X = rand() % 10;
+
+        //determina a posição inicial Y (Linhas ou Vertical)
+        while (1){
+            posicaoNavio2_Y = rand() % 10;
+
+            // garante que o navio não saia do tabuleiro
+            if (posicaoNavio2_Y > 7){
+                continue;
+            } else {
+                break;
+            }
+        }
+
+        // avalia a sobreposição
+        for (int i = 0; i < 3; i++){
+            if (tabuleiro[posicaoNavio2_Y + i][posicaoNavio2_X] != 0){
+                tentarDeNovo = 1;
+            }
+        }
+
+        // controla o loop
+        if (tentarDeNovo){
+            continue;
+        } else {
+            break;
+        }
+    }
+    
+    //posicionando o navio 2
+    for (int i = 0; i < 3; i++){
+        tabuleiro[posicaoNavio2_Y + i][posicaoNavio2_X] = navio[i];
+    }
 
     // imprimir o tabuleiro
     printTabuleiro(tabuleiro);
