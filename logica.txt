@@ -1,5 +1,7 @@
 Jogo Batalha Naval
 
+Nível Novato:
+
 posicionar 2 navios no tabuleiro de batalha Naval
 
 o tabuleiro consiste em uma tabela 10 x 10
@@ -24,3 +26,22 @@ Lógica para testar a sobreposição dos navios:
 
 3. Se qualquer parte que o navio precisar ocupar já estiver ocupado por outro navio
       é necessário reposicionar o navio
+
+Nível Aventureiro:
+
+Agora adicionaremos mais dois navios, porém na diagonal
+
+diagonal esquerda --> direta
+x 0 0
+0 x 0
+0 0 x
+
+diagonal direita --> esquerda
+0 0 x
+0 x 0
+x 0 0
+
+É preciso garantir que nenhuma parte do navio estrabole o tabuleiro
+
+E garantir que não haja sobreposição de navios
+para este caso será necessário avaliar uma area 3 x 3
