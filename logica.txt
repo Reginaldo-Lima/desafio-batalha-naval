@@ -1,0 +1,26 @@
+Jogo Batalha Naval
+
+posicionar 2 navios no tabuleiro de batalha Naval
+
+o tabuleiro consiste em uma tabela 10 x 10
+cada posição no tabuleiro precisa ser preenchido por zero (0), para indicar "água"
+
+os navios tem um tamanho de 3 x 1
+os navios são indicados pelo numero três (3)
+
+um navio precisa estar posicionado na vertical
+e o outro navio na horizontal
+
+os navios não podem se sobrepor um ao outro
+
+Lógica para testar a sobreposição dos navios:
+
+0. A posicão inicial do navio é determinada por uma coordenada (x, y)
+    O restante do navio é determinado modificando um dos eixos (vertical ou horizontal)
+
+1. É necessário garatir que nenhuma parte do navio extrapole o limite do tabuleiro
+
+2. O primeiro navio tem todo o tabuleiro livre para ocupar
+
+3. Se qualquer parte que o navio precisar ocupar já estiver ocupado por outro navio
+      é necessário reposicionar o navio
