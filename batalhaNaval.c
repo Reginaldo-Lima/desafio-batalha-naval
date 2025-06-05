@@ -1,16 +1,23 @@
+// Desafio Batalha Naval - MateCheck
+// Nível Aventureiro
+// Exibir o tabuleiro e posicionar dois navios
+// 05/06/2025 por Reginaldo Moura
+
 #include <stdio.h>
 
 #include <stdlib.h>     // inclui a biblioteca padrão para utilizar a função rand()
 #include <time.h>       // inclui a biblioteca time para utilizar a função time()
 
-// Desafio Batalha Naval - MateCheck
-// Nível Iniciante
-// Exibir o tabuleiro e posicionar dois navios
-// 04/06/2025 por Reginaldo Moura
+//Constantes
+#define LINHAS 10
+#define COLUNAS 10
+#define TAMANHO_NAVIO 3
+#define NAVIO 3
+#define AGUA 0
 
 // função que imprime o tabuleiro
-void printTabuleiro(int tabuleiro[10][10]){
-    for (int i = 0; i < 10; i++){
+void printTabuleiro(int tabuleiro[LINHAS][COLUNAS]){
+    for (int i = 0; i < LINHAS; i++){
 
         // imprime o cabeçalho
         if (i == 0){ 
@@ -18,12 +25,12 @@ void printTabuleiro(int tabuleiro[10][10]){
             printf("    A B C D E F G H I J\n");    //imprime as colunas
         }
         
-        for (int j = 0; j < 10; j++){
+        for (int j = 0; j < COLUNAS; j++){
 
             // imprime uma coluna com a numeração das linhas
-            if (j == 0 && i != 9){
+            if (j == 0 && i != COLUNAS - 1){
                 printf("%d - ", i + 1);
-            } else if (j == 0 && i == 9){
+            } else if (j == 0 && i > 8){
                 printf("%d- ", i + 1);  // imprime o número da linha 10 (por estética)
             }
 
@@ -34,6 +41,7 @@ void printTabuleiro(int tabuleiro[10][10]){
     }
 } // fim da função printTabuleiro
 
+
 // função main inicia o programa
 int main() {
     // Nível Novato - Posicionamento dos Navios
@@ -41,65 +49,44 @@ int main() {
     // Sugestão: Posicione dois navios no tabuleiro, um verticalmente e outro horizontalmente.
     // Sugestão: Utilize `printf` para exibir as coordenadas de cada parte dos navios.
 
-    
-    int tabuleiro[10][10];      // criação do tabuleiro
-    int navio[3] = {3, 3, 3};   //criação do navio
+    int tabuleiro[LINHAS][COLUNAS];      // criação do tabuleiro
+    int navio[TAMANHO_NAVIO];   //criação do navio
 
-    int posicaoNavio1_X;        //variável para armazenar a posição inicial X do navio 1
-    int posicaoNavio1_Y;        //variável para armazenar a posição inicial Y do navio 1
-    int posicaoNavio2_X;        //variável para armazenar a posição inicial X do navio 2
-    int posicaoNavio2_Y;        //variável para armazenar a posição inicial Y do navio 2
+    int posicaoX = 0;        //posição inicial X do navio
+    int posicaoY = 0;        //posição inicial Y do navio
 
     srand(time(0));             //inicializa a função randomica com base no time atual
 
     // inicialização da matriz tabuleiro
     // for aninhado para percorrer e inicializar os elementos da matriz como 0
-    for (int i = 0; i < 10; i++){
-        for (int j = 0; j < 10; j++){
-            tabuleiro[i][j] = 0;
+    for (int i = 0; i < LINHAS; i++){
+        for (int j = 0; j < COLUNAS; j++){
+            tabuleiro[i][j] = AGUA;
         }
+    }
+
+    // Inicialização do navio
+    for (int i = 0; i < TAMANHO_NAVIO; i++){
+        navio[i] = NAVIO;
     }
 
     // POSICIONAMENTO DOS NAVIOS
-    // navio 1, horizontal
-
-    // determina a posição Y (Linhas ou Vertical)
-    posicaoNavio1_Y = rand() % 10; // entre 0 e 9
-
-    // determina a posição X (Colunas ou Horizontal)
+    // navio horizontal
     while (1) //loop infinito controlado internamente
     {
-        posicaoNavio1_X = rand() % 10;
-
-        // garante que o tamanho do navio não exceda o limite do tabuleiro
-        if (posicaoNavio1_X > 7){
-            continue;
-        } else {
-            break;
-        }
-    }
-    
-    //posicionando o navio 1
-    for (int i = 0; i < 3; i++){
-        tabuleiro[posicaoNavio1_Y][posicaoNavio1_X + i] = navio[i];
-    }
-
-    // navio 2, vertical
-    // é necessário avaliar para não sobrepor navios
-    while (1) // loop infinito contolado internamente
-    {
-        // declaração de variáveis locais
+        //variaveis locais
         int tentarDeNovo = 0;   //para controlar o loop
-
-        //determina a posição inicial X (Colunas ou Horizontal)
-        posicaoNavio2_X = rand() % 10;
-
-        //determina a posição inicial Y (Linhas ou Vertical)
-        while (1){
-            posicaoNavio2_Y = rand() % 10;
-
-            // garante que o navio não saia do tabuleiro
-            if (posicaoNavio2_Y > 7){
+        
+        // determina a posição Y (Linhas ou Vertical)
+        posicaoY = rand() % LINHAS; // determina um numero entre 0 e "LINHAS"
+        
+        // determina a posição X (Colunas ou Horizontal)
+        while (1)
+        {
+            posicaoX = rand() % COLUNAS;
+    
+            // garante que o tamanho do navio não exceda o limite do tabuleiro
+            if (posicaoX > (COLUNAS - TAMANHO_NAVIO)){
                 continue;
             } else {
                 break;
@@ -107,10 +94,15 @@ int main() {
         }
 
         // avalia a sobreposição
-        for (int i = 0; i < 3; i++){
-            if (tabuleiro[posicaoNavio2_Y + i][posicaoNavio2_X] != 0){
+        for (int i = 0; i < TAMANHO_NAVIO; i++){
+            if (tabuleiro[posicaoX + i][posicaoY] != AGUA){
                 tentarDeNovo = 1;
             }
+        }
+
+        //posicionando o navio no tabuleiro
+        for (int i = 0; i < TAMANHO_NAVIO; i++){
+            tabuleiro[posicaoY][posicaoX + i] = navio[i];
         }
 
         // controla o loop
@@ -119,21 +111,159 @@ int main() {
         } else {
             break;
         }
-    }
+    } // fim do loop que define o navio vertical
     
-    //posicionando o navio 2
-    for (int i = 0; i < 3; i++){
-        tabuleiro[posicaoNavio2_Y + i][posicaoNavio2_X] = navio[i];
-    }
 
-    // imprimir o tabuleiro
-    printTabuleiro(tabuleiro);
+    // navio vertical
+    while (1) // loop infinito contolado internamente
+    {
+        // declaração de variáveis locais
+        int tentarDeNovo = 0;   //para controlar o loop
 
+        //determina a posição inicial X (Colunas ou Horizontal)
+        posicaoX = rand() % COLUNAS;
 
+        //determina a posição inicial Y (Linhas ou Vertical)
+        while (1){
+            posicaoY = rand() % LINHAS;
+
+            // garante que o navio não saia do tabuleiro
+            if (posicaoY > (LINHAS - TAMANHO_NAVIO)){
+                continue;
+            } else {
+                break;
+            }
+        }
+
+        // avalia a sobreposição
+        for (int i = 0; i < TAMANHO_NAVIO; i++){
+            if (tabuleiro[posicaoY + i][posicaoX] != AGUA){
+                tentarDeNovo = 1;
+            }
+        }
+
+        //posicionando o navio no tabuleiro
+        for (int i = 0; i < TAMANHO_NAVIO; i++){
+        tabuleiro[posicaoY + i][posicaoX] = navio[i];
+        }
+
+        // controla o loop
+        if (tentarDeNovo){
+            continue;
+        } else {
+            break;
+        }
+    } // fim do loop q define o navio horizontal
+    
     // Nível Aventureiro - Expansão do Tabuleiro e Posicionamento Diagonal
     // Sugestão: Expanda o tabuleiro para uma matriz 10x10.
     // Sugestão: Posicione quatro navios no tabuleiro, incluindo dois na diagonal.
     // Sugestão: Exiba o tabuleiro completo no console, mostrando 0 para posições vazias e 3 para posições ocupadas.
+    
+    // navio diagonal Esq --> Dir
+    while (1) // loop infinito contolado internamente
+    {
+        // declaração de variáveis locais
+        int tentarDeNovo = 0;   //para controlar o loop
+
+        //determina a posição inicial X (Colunas ou Horizontal)
+        while (1){
+            posicaoX = rand() % COLUNAS;
+
+            // garante que o navio não saia do tabuleiro
+            if (posicaoY > (COLUNAS - TAMANHO_NAVIO)){
+                continue;
+            } else {
+                break;
+            }
+        }
+        
+        //determina a posição inicial Y (Linhas ou Vertical)
+        while (1){
+            posicaoY = rand() % LINHAS;
+
+            // garante que o navio não saia do tabuleiro
+            if (posicaoY > (LINHAS - TAMANHO_NAVIO)){
+                continue;
+            } else {
+                break;
+            }
+        }
+
+        // avalia a sobreposição
+        for (int i = 0; i < TAMANHO_NAVIO; i++){
+            if (tabuleiro[posicaoY + i][posicaoX + i] != AGUA){
+                tentarDeNovo = 1;
+            }
+        }
+
+        //posicionando o navio no tabuleiro
+        for (int i = 0; i < TAMANHO_NAVIO; i++){
+        tabuleiro[posicaoY + i][posicaoX + i] = navio[i];
+        }
+
+        // controla o loop
+        if (tentarDeNovo){
+            continue;
+        } else {
+            break;
+        }
+    } // fim do loop q define o navio diagonal Esq --> Dir
+
+    // navio diagonal Dir --> Esq
+    while (1) // loop infinito contolado internamente
+    {
+        // declaração de variáveis locais
+        int tentarDeNovo = 0;   //para controlar o loop
+
+        //determina a posição inicial X (Colunas ou Horizontal)
+        while (1){
+            posicaoX = rand() % COLUNAS;
+
+            // garante que o navio não saia do tabuleiro
+            if (posicaoY < (TAMANHO_NAVIO - 1)){
+                continue;
+            } else {
+                break;
+            }
+        }
+        
+        //determina a posição inicial Y (Linhas ou Vertical)
+        while (1){
+            posicaoY = rand() % LINHAS;
+
+            // garante que o navio não saia do tabuleiro
+            if (posicaoY < (TAMANHO_NAVIO - 1)){
+                continue;
+            } else {
+                break;
+            }
+        }
+
+        // avalia a sobreposição
+        for (int i = 0; i < TAMANHO_NAVIO; i++){
+            if (tabuleiro[posicaoY - i][posicaoX + i] != AGUA){
+                tentarDeNovo = 1;
+            }
+        }
+
+        //posicionando o navio no tabuleiro
+        for (int i = 0; i < TAMANHO_NAVIO; i++){
+        tabuleiro[posicaoY - i][posicaoX + i] = navio[i];
+        }
+
+        // controla o loop
+        if (tentarDeNovo){
+            continue;
+        } else {
+            break;
+        }
+    } // fim do loop q define o navio diagonal Dir --> Esq
+
+    
+    // imprimir o tabuleiro
+    printTabuleiro(tabuleiro);
+
 
     // Nível Mestre - Habilidades Especiais com Matrizes
     // Sugestão: Crie matrizes para representar habilidades especiais como cone, cruz, e octaedro.
