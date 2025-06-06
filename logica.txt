@@ -45,3 +45,66 @@ x 0 0
 
 E garantir que não haja sobreposição de navios
 para este caso será necessário avaliar uma area 3 x 3
+
+Nível Mestre
+
+Incluir áreas de habilidades, área em cruz, area em cone e area octaedro
+
+Habilidade em cruz
+0 0 1 0 0
+0 0 1 0 0
+1 1 1 1 1
+0 0 1 0 0
+0 0 1 0 0
+
+Lógica: se a posicão x ou y for igual ao centro representar pelo número 1, caso contrário 0
+
+Habilidade Cone
+
+0 0 1 0 0
+0 1 1 1 0
+1 1 1 1 1
+0 0 0 0 0
+0 0 0 0 0
+
+Lógica:
+Um cone (ou triângulo) em uma matriz pode ser representado preenchendo 1s em 
+posições que satisfaçam uma condição de distância do centro.
+
+Centro da matriz: colunas / 2 (índice 2 em uma matriz 5x5).
+
+Condição para preencher 1:
+
+j >= centro - i: Limite esquerdo do cone (avança para a esquerda conforme i aumenta). 
+
+j <= centro + i: Limite direito do cone (avança para a direita conforme i aumenta).
+
+i <= linhas / 2: Limita o cone até a metade das linhas (para evitar repetição invertida).
+
+Habilidade Octaedro 
+0 0 1 0 0  
+0 1 1 1 0  
+1 1 1 1 1  
+0 1 1 1 0  
+0 0 1 0 0 
+
+Lógica:
+Centro da matriz:
+
+Em uma matriz ímpar, o centro está na posição (linhas / 2, colunas / 2) (índices começam em 0).
+
+Distância do centro:
+
+Para uma célula (i, j), a distância horizontal do centro é |j - centro|.
+
+A distância vertical é |i - centro|.
+
+Como não podemos usar abs() (uma função de retorna o módulo), calculamos manualmente:
+
+Se (j - centro) < 0, a distância é centro - j.
+
+Se (i - centro) < 0, a distância é centro - i.
+
+Condição do losango:
+
+Se distância_horizontal + distância_vertical <= centro, preencha com 1.
