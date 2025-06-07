@@ -4,9 +4,10 @@ int main(){
 
     int tamanho = 5;
     int centro = tamanho / 2;
+    int alturaCone = tamanho - centro;      //evita linhas extras no padrão cone
     int dist_x, dist_y;     //distância do centro
 
-    int cone[tamanho][tamanho];
+    int cone[alturaCone][tamanho];
     int cruz[tamanho][tamanho];
     int octaedro[tamanho][tamanho];
 
@@ -24,10 +25,10 @@ int main(){
     printf("\n");
 
     //matriz da habilidade cone
-    for (int i = 0; i < tamanho; i++){
+    for (int i = 0; i < alturaCone; i++){
         for (int j = 0; j < tamanho; j++){
 
-            if (j >= centro - i && j <= centro + i && i <= centro){
+            if (j >= centro - i && j <= centro + i){
                 cone[i][j] = 1;
             } else {
                 cone[i][j] = 0;

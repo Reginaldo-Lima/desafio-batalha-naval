@@ -8,15 +8,17 @@
 #include <time.h>       // inclui a biblioteca time para utilizar a função time()
 
 //Constantes
-#define LINHAS 10
-#define COLUNAS 10
+#define TAMANHO 10
 #define TAMANHO_NAVIO 3
 #define NAVIO 3
 #define AGUA 0
+#define HABILIDADE 1
+#define AREA_HABILIDADE 5
+#define EFEITO_HABILIDADE 5
 
 // função que imprime o tabuleiro
-void printTabuleiro(int tabuleiro[LINHAS][COLUNAS]){
-    for (int i = 0; i < LINHAS; i++){
+void printTabuleiro(int tabuleiro[TAMANHO][TAMANHO]){
+    for (int i = 0; i < TAMANHO; i++){
 
         // imprime o cabeçalho
         if (i == 0){ 
@@ -25,17 +27,17 @@ void printTabuleiro(int tabuleiro[LINHAS][COLUNAS]){
             printf("## # BATALHA NAVAL # ##\n\n");
             printf("    ");    //imprime um espaço, estético
 
-            for (int i = 0; i < COLUNAS; i++){
+            for (int i = 0; i < TAMANHO; i++){
                 printf("%c ", letra);   // imprime as colunas
                 letra++;
             }
             printf("\n");   //quebra de linha
         }
         
-        for (int j = 0; j < COLUNAS; j++){
+        for (int j = 0; j < TAMANHO; j++){
 
             // imprime uma coluna com a numeração das linhas
-            if (j == 0 && i != COLUNAS - 1){
+            if (j == 0 && i != TAMANHO - 1){
                 printf("%d - ", i + 1);
             } else if (j == 0 && i > 8){
                 printf("%d- ", i + 1);  // imprime o número da linha 10 (por estética)
@@ -48,26 +50,34 @@ void printTabuleiro(int tabuleiro[LINHAS][COLUNAS]){
     }
 } // fim da função printTabuleiro
 
+// função que retorna um número aleatório entre 0 e (TAMANHO - 1)
+int posicaoAleatoria(){
+    int num;
+    num = rand() % TAMANHO;
+    return num; 
+} // fim da função posicaoAleatoria
+
+int avaliaBordas(){
+
+    
+}
+
 // função main inicia o programa
 int main()
 {
-    // Nível Novato - Posicionamento dos Navios
-    // Sugestão: Declare uma matriz bidimensional para representar o tabuleiro (Ex: int tabuleiro[5][5];).
-    // Sugestão: Posicione dois navios no tabuleiro, um verticalmente e outro horizontalmente.
-    // Sugestão: Utilize `printf` para exibir as coordenadas de cada parte dos navios.
-
-    int tabuleiro[LINHAS][COLUNAS];     //criação do tabuleiro
+    
+    int tabuleiro[TAMANHO][TAMANHO];     //criação do tabuleiro
     int navio[TAMANHO_NAVIO];           //criação do navio
-
     int posicaoX = 0;        //posição inicial X do navio
     int posicaoY = 0;        //posição inicial Y do navio
+    int tentarDeNovo = 0;    //para controlar o loop
 
     srand(time(0));             //inicializa a função randomica com base no time atual
 
     // inicialização da matriz tabuleiro
     // for aninhado para percorrer e inicializar os elementos da matriz como "AGUA"
-    for (int i = 0; i < LINHAS; i++){
-        for (int j = 0; j < COLUNAS; j++){
+    for (int i = 0; i < TAMANHO; i++){
+        for (int j = 0; j < TAMANHO; j++){
             tabuleiro[i][j] = AGUA;
         }
     }
@@ -78,22 +88,21 @@ int main()
     }
 
     // POSICIONAMENTO DOS NAVIOS
-    // navio horizontal
-    while (1) //loop infinito controlado internamente
+    
+    while (1) // navio horizontal
     {
-        //variaveis locais
-        int tentarDeNovo = 0;   //para controlar o loop
+        tentarDeNovo = 0;
         
         // determina a posição Y (Linhas ou Vertical)
-        posicaoY = rand() % LINHAS; // determina um numero entre 0 e "LINHAS"
+        posicaoY = posicaoAleatoria();
         
         // determina a posição X (Colunas ou Horizontal)
         while (1)
         {
-            posicaoX = rand() % COLUNAS;
+            posicaoX = posicaoAleatoria();
     
             // garante que o tamanho do navio não exceda o limite do tabuleiro
-            if (posicaoX > (COLUNAS - TAMANHO_NAVIO)){
+            if (posicaoX > (TAMANHO - TAMANHO_NAVIO)){
                 continue;
             } else {
                 break;
@@ -111,30 +120,31 @@ int main()
         if (tentarDeNovo){
             continue;
         } else {
-            //posicionando o navio no tabuleiro
+            //posicionando o navio horizontal no tabuleiro
             for (int i = 0; i < TAMANHO_NAVIO; i++){
                 tabuleiro[posicaoY][posicaoX + i] = navio[i];
             }
+
             break;
+
         }
     } // fim do loop que define o navio vertical
-    
 
-    // navio vertical
-    while (1) // loop infinito contolado internamente
+
+    while (1) // navio vertical
     {
         // declaração de variáveis locais
-        int tentarDeNovo = 0;   //para controlar o loop
+        tentarDeNovo = 0;
 
         //determina a posição inicial X (Colunas ou Horizontal)
-        posicaoX = rand() % COLUNAS;
+        posicaoX = posicaoAleatoria();
 
         //determina a posição inicial Y (Linhas ou Vertical)
         while (1){
-            posicaoY = rand() % LINHAS;
+            posicaoY = posicaoAleatoria();
 
             // garante que o navio não saia do tabuleiro
-            if (posicaoY > (LINHAS - TAMANHO_NAVIO)){
+            if (posicaoY > (TAMANHO - TAMANHO_NAVIO)){
                 continue;
             } else {
                 break;
@@ -158,25 +168,22 @@ int main()
             }
             break;
         }
-    } // fim do loop q define o navio horizontal
+    } // fim do loop q define o navio vertical
     
-    // Nível Aventureiro - Expansão do Tabuleiro e Posicionamento Diagonal
-    // Sugestão: Expanda o tabuleiro para uma matriz 10x10.
+    // Nível Aventureiro - Posicionamento de Navios na Diagonal
     // Sugestão: Posicione quatro navios no tabuleiro, incluindo dois na diagonal.
-    // Sugestão: Exiba o tabuleiro completo no console, mostrando 0 para posições vazias e 3 para posições ocupadas.
-    
-    // navio diagonal Esq --> Dir
-    while (1)
+
+    while (1) // navio diagonal Esq --> Dir
     {
         // declaração de variáveis locais
-        int tentarDeNovo = 0;   //para controlar o loop
+        tentarDeNovo = 0;
 
         //determina a posição inicial X (Colunas ou Horizontal)
         while (1){
-            posicaoX = rand() % COLUNAS;
+            posicaoX = posicaoAleatoria();
 
             // garante que o navio não saia do tabuleiro
-            if (posicaoX > (COLUNAS - TAMANHO_NAVIO)){
+            if (posicaoX > (TAMANHO - TAMANHO_NAVIO)){
                 continue;
             } else {
                 break;
@@ -185,10 +192,10 @@ int main()
         
         //determina a posição inicial Y (Linhas ou Vertical)
         while (1){
-            posicaoY = rand() % LINHAS;
+            posicaoY = posicaoAleatoria();
 
             // garante que o navio não saia do tabuleiro
-            if (posicaoY > (LINHAS - TAMANHO_NAVIO)){
+            if (posicaoY > (TAMANHO - TAMANHO_NAVIO)){
                 continue;
             } else {
                 break;
@@ -216,18 +223,18 @@ int main()
         }
     } // fim do loop q define o navio diagonal Esq --> Dir
 
-    // navio diagonal Dir --> Esq
-    while (1) // loop infinito contolado internamente
+    
+    while (1) // navio diagonal Dir --> Esq
     {
         // declaração de variáveis locais
-        int tentarDeNovo = 0;   //para controlar o loop
+        tentarDeNovo = 0;
 
         //determina a posição inicial X (Colunas ou Horizontal)
         while (1){
-            posicaoX = rand() % COLUNAS;
+            posicaoX = posicaoAleatoria();
 
             // garante que o navio não saia do tabuleiro
-            if (posicaoX > (COLUNAS - TAMANHO_NAVIO)){
+            if (posicaoX > (TAMANHO - TAMANHO_NAVIO)){
                 continue;
             } else {
                 break;
@@ -236,7 +243,7 @@ int main()
         
         //determina a posição inicial Y (Linhas ou Vertical)
         while (1){
-            posicaoY = rand() % LINHAS;
+            posicaoY = posicaoAleatoria();
 
             // garante que o navio não saia do tabuleiro
             if (posicaoY < (TAMANHO_NAVIO - 1)){
@@ -268,30 +275,14 @@ int main()
     }// fim do loop q define o navio diagonal Dir --> Esq
 
     
-    // imprimir o tabuleiro
-    printTabuleiro(tabuleiro);
-
-
     // Nível Mestre - Habilidades Especiais com Matrizes
     // Sugestão: Crie matrizes para representar habilidades especiais como cone, cruz, e octaedro.
     // Sugestão: Utilize estruturas de repetição aninhadas para preencher as áreas afetadas por essas habilidades no tabuleiro.
     // Sugestão: Exiba o tabuleiro com as áreas afetadas, utilizando 0 para áreas não afetadas e 1 para áreas atingidas.
-
-    // Exemplos de exibição das habilidades:
-    // Exemplo para habilidade em cone:
-    // 0 0 1 0 0
-    // 0 1 1 1 0
-    // 1 1 1 1 1
     
-    // Exemplo para habilidade em octaedro:
-    // 0 0 1 0 0
-    // 0 1 1 1 0
-    // 0 0 1 0 0
-
-    // Exemplo para habilidade em cruz:
-    // 0 0 1 0 0
-    // 1 1 1 1 1
-    // 0 0 1 0 0
+    // imprimir o tabuleiro
+    printTabuleiro(tabuleiro);
 
     return 0;
 } // fim da função main
+
