@@ -8,7 +8,7 @@
 #include <time.h>       // inclui a biblioteca time para utilizar a função time()
 
 //Constantes
-#define TAMANHO_TAB 10
+#define TAMANHO_TAB 12
 #define TAMANHO_NAVIO 3
 #define TAMANHO_HAB 5
 #define AGUA 0
@@ -53,12 +53,16 @@ void inicializaCruz(int tamanho, int cruz[tamanho][tamanho]);
 // função que inicializa a habilidade em Octaedro
 void inicializaOctaedro(int tamanho, int octaedro[tamanho][tamanho]);
 
+// função que posiciona a habilidade no tabuleiro
+void posicionaHabilidade(int linhasHab, int colunasHab, int habilidade[linhasHab][colunasHab],
+                         int tamanhoTab, int tabuleiro[tamanhoTab][tamanhoTab]);
 
 // função que imprime o tabuleiro
 void imprimeTabuleiro(int tamanho, int tabuleiro[tamanho][tamanho]);
 
 // a função main inicia o programa
 int main(){
+    srand(time(0));
 
     //DECLARAÇÃO DE ELEMENTOS DO JOGO
     //estruturas
@@ -67,7 +71,7 @@ int main(){
 
     //habilidades
     int centro = TAMANHO_HAB / 2;
-    int alturaCone = TAMANHO_HAB - centro;  //evita linhas extras além da base so cone
+    int alturaCone = TAMANHO_HAB - centro;  //evita linhas extras além da base do cone
     int cone[alturaCone][TAMANHO_HAB];
     int cruz[TAMANHO_HAB][TAMANHO_HAB];
     int octaedro[TAMANHO_HAB][TAMANHO_HAB];
@@ -80,15 +84,19 @@ int main(){
     inicializaOctaedro(TAMANHO_HAB, octaedro);
 
     //POSICIONA NAVIOS NO TABULEIRO
-    //posiciona um navio na horizontal
+    /*
     navioHorizontal(TAMANHO_TAB, tabuleiro, TAMANHO_NAVIO, navio);
-    //posiciona um navio na vertical
     navioVertical(TAMANHO_TAB, tabuleiro, TAMANHO_NAVIO, navio);
-    //posiciona um navio na diagonal esquerda
     navioDiagonalPrincipal(TAMANHO_TAB, tabuleiro, TAMANHO_NAVIO, navio);
-    //posiciona um navio na diagonal direita
     navioDiagonalSecundaria(TAMANHO_TAB, tabuleiro, TAMANHO_NAVIO, navio);
+    */
 
+    //POSICIONA HABILIDADES NO TABULEIRO
+    
+    posicionaHabilidade(alturaCone, TAMANHO_HAB, cone, TAMANHO_TAB, tabuleiro);
+    posicionaHabilidade(TAMANHO_HAB, TAMANHO_HAB, cruz, TAMANHO_TAB, tabuleiro);
+    posicionaHabilidade(TAMANHO_HAB, TAMANHO_HAB, octaedro, TAMANHO_TAB, tabuleiro);
+    
 
     //imprime o tabuleiro
     imprimeTabuleiro(TAMANHO_TAB, tabuleiro);
@@ -150,9 +158,7 @@ void imprimeTabuleiro(int tamanho, int tabuleiro[tamanho][tamanho]){
 
 // função que retorna um número aleatório entre 0 e (TAMANHO - 1)
 int posicaoAleatoria(){
-    int num;
-    num = rand() % TAMANHO_TAB;
-    return num; 
+    return rand() % TAMANHO_TAB;
 } // fim da função posicaoAleatoria
 
 
@@ -371,7 +377,7 @@ void navioDiagonalSecundaria(int tamanhoTab, int tabuleiro[tamanhoTab][tamanhoTa
 // função que inicializa a habilidade em Cone
 void inicializaCone(int altura, int tamanho, int cone[altura][tamanho]){
     
-    int centro = altura / 2;
+    int centro = tamanho / 2;
 
     for (int i = 0; i < altura; i++){
         for (int j = 0; j < tamanho; j++){
@@ -411,7 +417,47 @@ void inicializaOctaedro(int tamanho, int octaedro[tamanho][tamanho]){
     }
 } // fim da função inicializaOctaedro
 
+// função que posiciona a habilidade no tabuleiro
+void posicionaHabilidade(int linhasHab, int colunasHab, int habilidade[linhasHab][colunasHab],
+                         int tamanhoTab, int tabuleiro[tamanhoTab][tamanhoTab])
+{
+    int posicaoX, posicaoY;
+    int tentativas = 0;
+    const int MAX_TENTATIVAS = 100;
 
+    while (tentativas < MAX_TENTATIVAS)
+    {
+        int posicaoValida = 1;
+        
+        // Gera posições aleatórias dentro dos limites
+        posicaoY = rand() % (tamanhoTab - linhasHab + 1);
+        posicaoX = rand() % (tamanhoTab - colunasHab + 1);
 
+        // Verifica sobreposição
+        for (int i = 0; i < linhasHab && posicaoValida; i++) {
+            for (int j = 0; j < colunasHab; j++) {
+                if (tabuleiro[posicaoY + i][posicaoX + j] != AGUA) {
+                    posicaoValida = 0;
+                    break;
+                }
+            }
+        }
 
+        // Se posição válida, coloca a habilidade
+        if (posicaoValida) {
+            for (int i = 0; i < linhasHab; i++) {
+                for (int j = 0; j < colunasHab; j++) {
+                    if (habilidade[i][j] == HABILIDADE) {
+                        tabuleiro[posicaoY + i][posicaoX + j] = habilidade[i][j];
+                    }
+                }
+            }
+            return;
+        }
+
+        tentativas++;
+    }
+
+    printf("Não foi possível posicionar habilidade após %d tentativas\n", MAX_TENTATIVAS);
+}
 
