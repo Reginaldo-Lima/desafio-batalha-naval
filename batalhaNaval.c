@@ -1,98 +1,140 @@
 // Desafio Batalha Naval - MateCheck
-// Nível Aventureiro
-// Exibir o tabuleiro e posicionar dois navios
-// 05/06/2025 por Reginaldo Moura
+// Nível Mestre
+// Implementar habilidades
+// 07/06/2025 por Reginaldo Moura
 
 #include <stdio.h>
 #include <stdlib.h>     // inclui a biblioteca padrão para utilizar a função rand()
 #include <time.h>       // inclui a biblioteca time para utilizar a função time()
 
 //Constantes
-#define TAMANHO 10
+#define TAMANHO_TAB 10
 #define TAMANHO_NAVIO 3
-#define NAVIO 3
 #define AGUA 0
-#define HABILIDADE 1
-#define AREA_HABILIDADE 5
-#define EFEITO_HABILIDADE 5
+#define NAVIO 3
+
+// protótipos de funções
+// função que inicializa uma matriz quadrada com todos elementos iguais
+void inicializaMatriz(int valor, int tamanho, int matriz[tamanho][tamanho]);
+
+// função que inicializa um vetor com todos elementos iguais
+void inicializaVetor(int valor, int tamanho, int vetor[tamanho]);
+
+// função que retorna um número aleatório entre 0 e (TAMANHO - 1)
+int posicaoAleatoria();
+
+// função que define um navio na posição horizontal
+void navioHorizontal(int tamanhoTab, int tabuleiro[tamanhoTab][tamanhoTab],
+                     int tamanhoNavio, int navio[tamanhoNavio]);
+
+// função que define um navio na vertical
+void navioVertical(int tamanhoTab, int tabuleiro[tamanhoTab][tamanhoTab],
+                   int tamanhoNavio, int navio[tamanhoNavio]);
+
+// função que define um navio na posição diagonal Esq --> Dir
+void navioDiagonalEsquerda(int tamanhoTab, int tabuleiro[tamanhoTab][tamanhoTab],
+                           int tamanhoNavio, int navio[tamanhoNavio]);
+
+// função que define um navio na posição diagonal Dir --> Esq
+void navioDiagonalDireita(int tamanhoTab, int tabuleiro[tamanhoTab][tamanhoTab],
+                           int tamanhoNavio, int navio[tamanhoNavio]);
 
 // função que imprime o tabuleiro
-void printTabuleiro(int tabuleiro[TAMANHO][TAMANHO]){
-    for (int i = 0; i < TAMANHO; i++){
+void imprimeTabuleiro(int tamanho, int tabuleiro[tamanho][tamanho]);
 
-        // imprime o cabeçalho
-        if (i == 0){ 
-            char letra = 'A';
+// a função main inicia o programa
+int main(){
+    //declaração de elementos locais
+    int tabuleiro[TAMANHO_TAB][TAMANHO_TAB];    //tabuleiro de batalha naval
+    int navio[TAMANHO_NAVIO];                   // "objeto" navio
 
-            printf("## # BATALHA NAVAL # ##\n\n");
-            printf("    ");    //imprime um espaço, estético
+    inicializaMatriz(AGUA, TAMANHO_TAB, tabuleiro); //inicializa o tabuleiro
+    inicializaVetor(NAVIO, TAMANHO_NAVIO, navio);   //inicializa o navio
 
-            for (int i = 0; i < TAMANHO; i++){
-                printf("%c ", letra);   // imprime as colunas
+    //posiciona um navio na horizontal
+    navioHorizontal(TAMANHO_TAB, tabuleiro, TAMANHO_NAVIO, navio);
+    //posiciona um navio na vertical
+    navioVertical(TAMANHO_TAB, tabuleiro, TAMANHO_NAVIO, navio);
+    //posiciona um navio na diagonal esquerda
+    navioDiagonalEsquerda(TAMANHO_TAB, tabuleiro, TAMANHO_NAVIO, navio);
+    //posiciona um navio na diagonal direita
+    navioDiagonalDireita(TAMANHO_TAB, tabuleiro, TAMANHO_NAVIO, navio);
+
+
+    //imprime o tabuleiro
+    imprimeTabuleiro(TAMANHO_TAB, tabuleiro);
+
+    return 0;
+} // fim da função main
+
+// função que inicializa uma matriz quadrada com todos os elementos iguais
+void inicializaMatriz(int valor, int tamanho, int matriz[tamanho][tamanho]){
+    for (int i = 0; i < tamanho; i++){
+        for (int j = 0; j < tamanho; j++){
+            matriz[i][j] = valor;
+        }
+    }
+} //fim da função inicializaMatriz
+
+// função que inicializa um vetor com todos elementos iguais
+void inicializaVetor(int valor, int tamanho, int vetor[tamanho]){
+    for (int i = 0; i < tamanho; i++){
+        vetor[i] = valor;
+    }
+}
+
+// função que imprime o tabuleiro
+void imprimeTabuleiro(int tamanho, int tabuleiro[tamanho][tamanho]){
+
+    char letra = 'A'; //variável para exibir as colunas
+
+    for (int i = 0; i < tamanho; i++){
+
+        //imprime o cabeçalho do jogo
+        if (i == 0){
+            printf("## # BATALHA NAVAL # ##\n");
+            printf("\n    "); //espaços para alinhar a linha de colunas
+    
+            //imprime indicação das colunas
+            for (int c = 0; c < tamanho; c++){
+                printf("%c ", letra);
                 letra++;
             }
-            printf("\n");   //quebra de linha
+            printf("\n"); //nova linha
         }
         
-        for (int j = 0; j < TAMANHO; j++){
+        for (int j = 0; j < tamanho; j++){
 
-            // imprime uma coluna com a numeração das linhas
-            if (j == 0 && i != TAMANHO - 1){
+            //imprime a indicação das linhas
+            if (j == 0 && i <= 8){
                 printf("%d - ", i + 1);
             } else if (j == 0 && i > 8){
-                printf("%d- ", i + 1);  // imprime o número da linha 10 (por estética)
+                printf("%d- ", i + 1);
             }
-
-            printf("%d ", tabuleiro[i][j]); //imprime o tabuleiro, de fato
+            
+            //imprime o tabuleiro
+            printf("%d ", tabuleiro[i][j]);
         }
-
-        printf("\n");   //imprime uma nova linha
+        printf("\n");
     }
-} // fim da função printTabuleiro
+} // fim da função imprimeTabuleiro
 
 // função que retorna um número aleatório entre 0 e (TAMANHO - 1)
 int posicaoAleatoria(){
     int num;
-    num = rand() % TAMANHO;
+    num = rand() % TAMANHO_TAB;
     return num; 
 } // fim da função posicaoAleatoria
 
-int avaliaBordas(){
-
-    
-}
-
-// função main inicia o programa
-int main()
+// função que define um navio na posição horizontal
+void navioHorizontal(int tamanhoTab, int tabuleiro[tamanhoTab][tamanhoTab],
+                     int tamanhoNavio, int navio[tamanhoNavio])
 {
-    
-    int tabuleiro[TAMANHO][TAMANHO];     //criação do tabuleiro
-    int navio[TAMANHO_NAVIO];           //criação do navio
-    int posicaoX = 0;        //posição inicial X do navio
-    int posicaoY = 0;        //posição inicial Y do navio
-    int tentarDeNovo = 0;    //para controlar o loop
+    int tentarDeNovo = 0;   //controla o loop
+    int posicaoY, posicaoX; //posição Y e X (linha, coluna) iniciais
 
-    srand(time(0));             //inicializa a função randomica com base no time atual
-
-    // inicialização da matriz tabuleiro
-    // for aninhado para percorrer e inicializar os elementos da matriz como "AGUA"
-    for (int i = 0; i < TAMANHO; i++){
-        for (int j = 0; j < TAMANHO; j++){
-            tabuleiro[i][j] = AGUA;
-        }
-    }
-
-    // Inicialização do navio
-    for (int i = 0; i < TAMANHO_NAVIO; i++){
-        navio[i] = NAVIO;
-    }
-
-    // POSICIONAMENTO DOS NAVIOS
-    
-    while (1) // navio horizontal
+    while (1)
     {
-        tentarDeNovo = 0;
-        
         // determina a posição Y (Linhas ou Vertical)
         posicaoY = posicaoAleatoria();
         
@@ -102,7 +144,7 @@ int main()
             posicaoX = posicaoAleatoria();
     
             // garante que o tamanho do navio não exceda o limite do tabuleiro
-            if (posicaoX > (TAMANHO - TAMANHO_NAVIO)){
+            if (posicaoX > (tamanhoTab - tamanhoNavio)){
                 continue;
             } else {
                 break;
@@ -110,7 +152,7 @@ int main()
         }
 
         // avalia a sobreposição
-        for (int i = 0; i < TAMANHO_NAVIO; i++){
+        for (int i = 0; i < tamanhoNavio; i++){
             if (tabuleiro[posicaoY][posicaoX + i] != AGUA){
                 tentarDeNovo = 1;
             }
@@ -121,20 +163,27 @@ int main()
             continue;
         } else {
             //posicionando o navio horizontal no tabuleiro
-            for (int i = 0; i < TAMANHO_NAVIO; i++){
+            for (int i = 0; i < tamanhoNavio; i++){
                 tabuleiro[posicaoY][posicaoX + i] = navio[i];
             }
 
             break;
 
         }
-    } // fim do loop que define o navio vertical
+    } // fim do loop que define o navio horizontal
+} // fim da função navioHorizontal
 
+// função que define um navio na posição vertical
+void navioVertical(int tamanhoTab, int tabuleiro[tamanhoTab][tamanhoTab],
+                   int tamanhoNavio, int navio[tamanhoNavio])
+{
+    
+    // declaração de variáveis locais
+    int tentarDeNovo = 0;
+    int posicaoY, posicaoX;
 
     while (1) // navio vertical
     {
-        // declaração de variáveis locais
-        tentarDeNovo = 0;
 
         //determina a posição inicial X (Colunas ou Horizontal)
         posicaoX = posicaoAleatoria();
@@ -144,7 +193,7 @@ int main()
             posicaoY = posicaoAleatoria();
 
             // garante que o navio não saia do tabuleiro
-            if (posicaoY > (TAMANHO - TAMANHO_NAVIO)){
+            if (posicaoY > (tamanhoTab - tamanhoNavio)){
                 continue;
             } else {
                 break;
@@ -152,7 +201,7 @@ int main()
         }
 
         // avalia a sobreposição
-        for (int i = 0; i < TAMANHO_NAVIO; i++){
+        for (int i = 0; i < tamanhoNavio; i++){
             if (tabuleiro[posicaoY + i][posicaoX] != AGUA){
                 tentarDeNovo = 1;
             }
@@ -163,27 +212,30 @@ int main()
             continue;
         } else {
             //posicionando o navio no tabuleiro
-            for (int i = 0; i < TAMANHO_NAVIO; i++){
+            for (int i = 0; i < tamanhoNavio; i++){
             tabuleiro[posicaoY + i][posicaoX] = navio[i];
             }
             break;
         }
     } // fim do loop q define o navio vertical
-    
-    // Nível Aventureiro - Posicionamento de Navios na Diagonal
-    // Sugestão: Posicione quatro navios no tabuleiro, incluindo dois na diagonal.
+} // fim da função navioVertical
+
+// função que define um navio na posição diagonal Esq --> Dir
+void navioDiagonalEsquerda(int tamanhoTab, int tabuleiro[tamanhoTab][tamanhoTab],
+                           int tamanhoNavio, int navio[tamanhoNavio])
+{
+    // declaração de variáveis locais
+    int tentarDeNovo = 0;
+    int posicaoY, posicaoX;
 
     while (1) // navio diagonal Esq --> Dir
     {
-        // declaração de variáveis locais
-        tentarDeNovo = 0;
-
         //determina a posição inicial X (Colunas ou Horizontal)
         while (1){
             posicaoX = posicaoAleatoria();
 
             // garante que o navio não saia do tabuleiro
-            if (posicaoX > (TAMANHO - TAMANHO_NAVIO)){
+            if (posicaoX > (tamanhoTab - tamanhoNavio)){
                 continue;
             } else {
                 break;
@@ -195,7 +247,7 @@ int main()
             posicaoY = posicaoAleatoria();
 
             // garante que o navio não saia do tabuleiro
-            if (posicaoY > (TAMANHO - TAMANHO_NAVIO)){
+            if (posicaoY > (tamanhoTab - tamanhoNavio)){
                 continue;
             } else {
                 break;
@@ -203,8 +255,8 @@ int main()
         }
 
         // avalia a sobreposição em uma area 3 x 3
-        for (int i = 0; i < TAMANHO_NAVIO; i++){
-            for (int j = 0; j < TAMANHO_NAVIO; j++){
+        for (int i = 0; i < tamanhoNavio; i++){
+            for (int j = 0; j < tamanhoNavio; j++){
                 if (tabuleiro[posicaoY + i][posicaoX + j] != AGUA){
                     tentarDeNovo = 1;
                 }
@@ -216,25 +268,31 @@ int main()
             continue;
         } else {
             //posicionando o navio no tabuleiro
-            for (int i = 0; i < TAMANHO_NAVIO; i++){
+            for (int i = 0; i < tamanhoNavio; i++){
             tabuleiro[posicaoY + i][posicaoX + i] = navio[i];
             }
             break;
         }
     } // fim do loop q define o navio diagonal Esq --> Dir
+}// fim da função navioDiagonalEsquerda
 
-    
+// função que define um navio na posição diagonal Dir --> Esq
+void navioDiagonalDireita(int tamanhoTab, int tabuleiro[tamanhoTab][tamanhoTab],
+                           int tamanhoNavio, int navio[tamanhoNavio])
+{
+    // declaração de variáveis locais
+    int tentarDeNovo = 0;
+    int posicaoY, posicaoX;
+
     while (1) // navio diagonal Dir --> Esq
     {
-        // declaração de variáveis locais
-        tentarDeNovo = 0;
 
         //determina a posição inicial X (Colunas ou Horizontal)
         while (1){
             posicaoX = posicaoAleatoria();
 
             // garante que o navio não saia do tabuleiro
-            if (posicaoX > (TAMANHO - TAMANHO_NAVIO)){
+            if (posicaoX > (tamanhoTab - tamanhoNavio)){
                 continue;
             } else {
                 break;
@@ -246,7 +304,7 @@ int main()
             posicaoY = posicaoAleatoria();
 
             // garante que o navio não saia do tabuleiro
-            if (posicaoY < (TAMANHO_NAVIO - 1)){
+            if (posicaoY < (tamanhoNavio - 1)){
                 continue;
             } else {
                 break;
@@ -254,8 +312,8 @@ int main()
         }
 
         // avalia a sobreposição em uma area 3 x 3
-        for (int i = 0; i < TAMANHO_NAVIO; i++){
-            for (int j = 0; j < TAMANHO_NAVIO; j++){
+        for (int i = 0; i < tamanhoNavio; i++){
+            for (int j = 0; j < tamanhoNavio; j++){
                 if (tabuleiro[posicaoY - i][posicaoX + j] != AGUA){
                     tentarDeNovo = 1;
                 }
@@ -267,22 +325,11 @@ int main()
             continue;
         } else {
             //posicionando o navio no tabuleiro
-            for (int i = 0; i < TAMANHO_NAVIO; i++){
+            for (int i = 0; i < tamanhoNavio; i++){
             tabuleiro[posicaoY - i][posicaoX + i] = navio[i];
             }
             break;
         }
     }// fim do loop q define o navio diagonal Dir --> Esq
-
-    
-    // Nível Mestre - Habilidades Especiais com Matrizes
-    // Sugestão: Crie matrizes para representar habilidades especiais como cone, cruz, e octaedro.
-    // Sugestão: Utilize estruturas de repetição aninhadas para preencher as áreas afetadas por essas habilidades no tabuleiro.
-    // Sugestão: Exiba o tabuleiro com as áreas afetadas, utilizando 0 para áreas não afetadas e 1 para áreas atingidas.
-    
-    // imprimir o tabuleiro
-    printTabuleiro(tabuleiro);
-
-    return 0;
-} // fim da função main
+} // fim da função navioDiagonalDireita
 
