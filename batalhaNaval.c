@@ -10,10 +10,14 @@
 //Constantes
 #define TAMANHO_TAB 10
 #define TAMANHO_NAVIO 3
+#define TAMANHO_HAB 5
 #define AGUA 0
 #define NAVIO 3
+#define HABILIDADE 1
+#define EFEITO_HAB 5
 
 // protótipos de funções
+
 // função que inicializa uma matriz quadrada com todos elementos iguais
 void inicializaMatriz(int valor, int tamanho, int matriz[tamanho][tamanho]);
 
@@ -32,33 +36,58 @@ void navioVertical(int tamanhoTab, int tabuleiro[tamanhoTab][tamanhoTab],
                    int tamanhoNavio, int navio[tamanhoNavio]);
 
 // função que define um navio na posição diagonal Esq --> Dir
-void navioDiagonalEsquerda(int tamanhoTab, int tabuleiro[tamanhoTab][tamanhoTab],
+void navioDiagonalPrincipal(int tamanhoTab, int tabuleiro[tamanhoTab][tamanhoTab],
                            int tamanhoNavio, int navio[tamanhoNavio]);
 
 // função que define um navio na posição diagonal Dir --> Esq
-void navioDiagonalDireita(int tamanhoTab, int tabuleiro[tamanhoTab][tamanhoTab],
+void navioDiagonalSecundaria(int tamanhoTab, int tabuleiro[tamanhoTab][tamanhoTab],
                            int tamanhoNavio, int navio[tamanhoNavio]);
+
+
+// função que inicializa a habilidade em Cone
+void inicializaCone(int altura, int tamanho, int cone[altura][tamanho]);
+
+// função que inicializa a habilidade em Cruz
+void inicializaCruz(int tamanho, int cruz[tamanho][tamanho]);
+
+// função que inicializa a habilidade em Octaedro
+void inicializaOctaedro(int tamanho, int octaedro[tamanho][tamanho]);
+
 
 // função que imprime o tabuleiro
 void imprimeTabuleiro(int tamanho, int tabuleiro[tamanho][tamanho]);
 
 // a função main inicia o programa
 int main(){
-    //declaração de elementos locais
+
+    //DECLARAÇÃO DE ELEMENTOS DO JOGO
+    //estruturas
     int tabuleiro[TAMANHO_TAB][TAMANHO_TAB];    //tabuleiro de batalha naval
     int navio[TAMANHO_NAVIO];                   // "objeto" navio
+
+    //habilidades
+    int centro = TAMANHO_HAB / 2;
+    int alturaCone = TAMANHO_HAB - centro;  //evita linhas extras além da base so cone
+    int cone[alturaCone][TAMANHO_HAB];
+    int cruz[TAMANHO_HAB][TAMANHO_HAB];
+    int octaedro[TAMANHO_HAB][TAMANHO_HAB];
 
     inicializaMatriz(AGUA, TAMANHO_TAB, tabuleiro); //inicializa o tabuleiro
     inicializaVetor(NAVIO, TAMANHO_NAVIO, navio);   //inicializa o navio
 
+    inicializaCone(alturaCone, TAMANHO_HAB, cone);
+    inicializaCruz(TAMANHO_HAB, cruz);
+    inicializaOctaedro(TAMANHO_HAB, octaedro);
+
+    //POSICIONA NAVIOS NO TABULEIRO
     //posiciona um navio na horizontal
     navioHorizontal(TAMANHO_TAB, tabuleiro, TAMANHO_NAVIO, navio);
     //posiciona um navio na vertical
     navioVertical(TAMANHO_TAB, tabuleiro, TAMANHO_NAVIO, navio);
     //posiciona um navio na diagonal esquerda
-    navioDiagonalEsquerda(TAMANHO_TAB, tabuleiro, TAMANHO_NAVIO, navio);
+    navioDiagonalPrincipal(TAMANHO_TAB, tabuleiro, TAMANHO_NAVIO, navio);
     //posiciona um navio na diagonal direita
-    navioDiagonalDireita(TAMANHO_TAB, tabuleiro, TAMANHO_NAVIO, navio);
+    navioDiagonalSecundaria(TAMANHO_TAB, tabuleiro, TAMANHO_NAVIO, navio);
 
 
     //imprime o tabuleiro
@@ -125,6 +154,9 @@ int posicaoAleatoria(){
     num = rand() % TAMANHO_TAB;
     return num; 
 } // fim da função posicaoAleatoria
+
+
+//FONÇÕES QUE INICIALIZAM E POSICIONAM NAVIOS
 
 // função que define um navio na posição horizontal
 void navioHorizontal(int tamanhoTab, int tabuleiro[tamanhoTab][tamanhoTab],
@@ -220,8 +252,8 @@ void navioVertical(int tamanhoTab, int tabuleiro[tamanhoTab][tamanhoTab],
     } // fim do loop q define o navio vertical
 } // fim da função navioVertical
 
-// função que define um navio na posição diagonal Esq --> Dir
-void navioDiagonalEsquerda(int tamanhoTab, int tabuleiro[tamanhoTab][tamanhoTab],
+// função que define um navio na posição diagonal Principal
+void navioDiagonalPrincipal(int tamanhoTab, int tabuleiro[tamanhoTab][tamanhoTab],
                            int tamanhoNavio, int navio[tamanhoNavio])
 {
     // declaração de variáveis locais
@@ -274,10 +306,10 @@ void navioDiagonalEsquerda(int tamanhoTab, int tabuleiro[tamanhoTab][tamanhoTab]
             break;
         }
     } // fim do loop q define o navio diagonal Esq --> Dir
-}// fim da função navioDiagonalEsquerda
+}// fim da função navioDiagonalPrincipal
 
 // função que define um navio na posição diagonal Dir --> Esq
-void navioDiagonalDireita(int tamanhoTab, int tabuleiro[tamanhoTab][tamanhoTab],
+void navioDiagonalSecundaria(int tamanhoTab, int tabuleiro[tamanhoTab][tamanhoTab],
                            int tamanhoNavio, int navio[tamanhoNavio])
 {
     // declaração de variáveis locais
@@ -331,5 +363,55 @@ void navioDiagonalDireita(int tamanhoTab, int tabuleiro[tamanhoTab][tamanhoTab],
             break;
         }
     }// fim do loop q define o navio diagonal Dir --> Esq
-} // fim da função navioDiagonalDireita
+} // fim da função navioDiagonalSecundaria
+
+
+// FUNÇÕES QUE INICIALIZAM E POSICIONAM AS HABILIDADES
+
+// função que inicializa a habilidade em Cone
+void inicializaCone(int altura, int tamanho, int cone[altura][tamanho]){
+    
+    int centro = altura / 2;
+
+    for (int i = 0; i < altura; i++){
+        for (int j = 0; j < tamanho; j++){
+            //um cone "cresce" de acordo com a altura (linhas) e a distância do centro
+            cone[i][j] = (j >= centro - i && j <= centro + i) ? HABILIDADE : AGUA;
+        }
+    }
+} // fim da função inicializaCone
+
+// função que inicializa a habilidade em Cruz
+void inicializaCruz(int tamanho, int cruz[tamanho][tamanho]){
+
+    int centro = tamanho / 2;
+
+    for (int i = 0; i < tamanho; i++){
+        for (int j = 0; j < tamanho; j++){
+            cruz[i][j] = (j == centro || i == centro) ? HABILIDADE : AGUA;
+        }
+    }
+} // fim da função inicializaCruz
+
+// função que inicializa a habilidade em Octaedro
+void inicializaOctaedro(int tamanho, int octaedro[tamanho][tamanho]){
+    int centro = tamanho / 2;
+    int dist_x, dist_y;         //distância do centro
+
+    for (int i = 0; i < tamanho; i++){
+        for (int j = 0; j < tamanho; j++){
+
+            //calcula as distãncias até o centro
+            dist_x = (j > centro) ? j - centro : centro - j;
+            dist_y = (i > centro) ? i - centro : centro - i;
+
+            //condição do losango
+            octaedro[i][j] = (dist_x + dist_y <= centro) ? HABILIDADE : AGUA;
+        }
+    }
+} // fim da função inicializaOctaedro
+
+
+
+
 
